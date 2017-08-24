@@ -13,11 +13,14 @@
 #import "YRightAxisFormtter.h"
 #import "HighLightFormatter.h"
 
+
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet BaseCurveView *myView;
 @property (nonatomic, strong) SLLineChartData* dataSource;
 @property (nonatomic, strong) NSMutableArray* tempArray0;
 @property (nonatomic, strong) NSMutableArray* tempArray1;
+@property (nonatomic, strong) NSMutableArray* tempArray2;
+
 @property (nonatomic, strong) SLGCDTimer timer;
 @property (nonatomic, strong) HighLightFormatter *highLightFor;
 
@@ -33,92 +36,64 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    CAGradientLayer* gradientLayer  = [CAGradientLayer layer];
-    gradientLayer.frame = self.view.bounds;
-    gradientLayer.startPoint = CGPointMake(0, 0);
-    gradientLayer.endPoint = CGPointMake(0, 1);
-    
-    //设置颜色数组
-    gradientLayer.colors = @[(__bridge id)[UIColor blueColor].CGColor,
-                               (__bridge id)[UIColor greenColor].CGColor];
-    [self.view.layer insertSublayer:gradientLayer atIndex:0];
-    
+    self.view.backgroundColor = [UIColor blackColor];
     
     ChartAxisBase* xAxis = self.myView.XAxis;
     xAxis.axisValueFormatter = [[XAxisFormtter alloc] init];
     xAxis.drawLabelsEnabled = YES;
+    xAxis.centerAxisLabelsEnabled = YES;
     xAxis.drawAxisLineEnabled = YES;
-    xAxis.drawGridLinesEnabled = YES;
-    xAxis.labelFont = [UIFont systemFontOfSize:11.0];
-    xAxis.labelTextColor = [UIColor whiteColor];
+    xAxis.drawGridLinesEnabled = NO;
+    xAxis.GridLinesMode = straightModeLine; // 网格线类型
+    xAxis.labelFont = [UIFont systemFontOfSize:12];
+    xAxis.labelTextColor = [UIColor colorWithHex:@"#999999"];
     xAxis.maxLongLabelString = @"1234";
-    xAxis.GridLinesMode = dashModeLine;
     xAxis.enabled = YES;
-    
-    ChartAxisBase* leftYAxis = self.myView.leftYAxis;
-    leftYAxis.axisValueFormatter = [[YAxisFormtter alloc] init];
-    leftYAxis.drawLabelsEnabled = YES;
-    leftYAxis.drawAxisLineEnabled = YES;
-    leftYAxis.drawGridLinesEnabled = YES;
-    leftYAxis.labelFont = [UIFont systemFontOfSize:11.0];
-    leftYAxis.labelTextColor = [UIColor whiteColor];
-    leftYAxis.maxLongLabelString = @"100.0";
-    leftYAxis.GridLinesMode = dashModeLine;
-    leftYAxis.gridColor = [UIColor colorWithColor:[UIColor whiteColor] andalpha:0.25];
-    leftYAxis.enabled = YES;
-    
-    ChartAxisBase* rightYAxis = self.myView.rightYAxis;
-    rightYAxis.axisValueFormatter = [[YRightAxisFormtter alloc] init];
-    rightYAxis.drawLabelsEnabled = YES;
-    rightYAxis.drawAxisLineEnabled = YES;
-    rightYAxis.drawGridLinesEnabled = YES;
-    rightYAxis.labelFont = [UIFont systemFontOfSize:11.0];
-    rightYAxis.labelTextColor = [UIColor whiteColor];
-    rightYAxis.maxLongLabelString = @"100.0";
-    rightYAxis.GridLinesMode = dashModeLine;
-    rightYAxis.gridColor = [UIColor colorWithColor:[UIColor blueColor] andalpha:0.25];;
-    rightYAxis.enabled = YES;
     
     //默认选择的highlight
     ChartHighlight* highLight = [[ChartHighlight alloc] init];
-    highLight.dataIndex = 5;
     highLight.enabled = YES;
+    highLight.dataIndex = 10;
+    highLight.hightlightLineMode = SolidModeHightlightLine;
+    highLight.remindLabelMode = textStyleMode;
     self.highLightFor = [[HighLightFormatter alloc] init];
-    highLight.delegate = self.highLightFor;
+//    highLight.delegate = self.highLightFor;
     self.myView.hightLight = highLight;
     
     
     SLLineChartDataSet* dataSet = [[SLLineChartDataSet alloc] initWithValues:self.tempArray1 label:@"Default"];
-    dataSet.lineWidth = 1.0;
-    dataSet.mode = curveLineMode;
-    dataSet.color = [UIColor greenColor];
-    dataSet.circleRadius = 5.0;
-    dataSet.circleHoleRadius = 3.0;
-    dataSet.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
-    dataSet.drawCircleHoleEnabled = YES;
-    dataSet.drawCirclesEnabled = YES;
-    dataSet.drawCirclesEnabled = YES;
-    dataSet.drawFilledEnabled = YES;
-    dataSet.gradientColors = @[[UIColor greenColor], [UIColor clearColor]];
+    dataSet.lineWidth = 1.5;
+    dataSet.mode = brokenLineMode;
+    dataSet.color = [UIColor colorWithHex:@"#fbc626"];
+    dataSet.drawCirclesEnabled = NO;
+    
+    
+//    dataSet.circleColor = [UIColor colorWithHex:@"#fbc626"];
+//    dataSet.circleRadius = 3.0;
+//    dataSet.circleHoleRadius = 3.0;
+//    dataSet.drawCircleHoleEnabled = YES;
+//    dataSet.gradientColors = @[[UIColor greenColor], [UIColor clearColor]];
+    
+    
     
     SLLineChartDataSet* dataSet2 = [[SLLineChartDataSet alloc] initWithValues:self.tempArray0 label:@"Default"];
+    dataSet2.drawCirclesEnabled = NO;
     dataSet2.lineWidth = 1.0;
-    dataSet2.mode = curveLineMode;
-    dataSet2.color = [UIColor redColor];
-    dataSet2.circleRadius = 5.0;
-    dataSet2.circleHoleRadius = 3.0;
-    dataSet2.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
-    dataSet2.drawCircleHoleEnabled = YES;
-    dataSet2.drawCirclesEnabled = YES;
-    dataSet2.drawCirclesEnabled = YES;
-    dataSet2.drawFilledEnabled = YES;
-    dataSet2.fillColor = [UIColor colorWithHex:@"#26497c" andalpha:0.5];
-    dataSet2.lineFillMode = SingleColorFillMode;
+    dataSet2.mode = brokenLineMode;
+    dataSet2.color = [UIColor colorWithHex:@"#fc83a9"];
+    
+    
+    SLLineChartDataSet* dataSet3 = [[SLLineChartDataSet alloc] initWithValues:self.tempArray2 label:@"Default"];
+    dataSet3.lineWidth = 1.0;
+    dataSet3.mode = brokenLineMode;
+    dataSet3.drawCirclesEnabled = NO;
+    dataSet3.color = [UIColor colorWithHex:@"#7199ff"];
+    
     
     NSMutableArray* tempArray = [NSMutableArray arrayWithCapacity:1];
     [tempArray addObject:dataSet];
     [tempArray addObject:dataSet2];
+    [tempArray addObject:dataSet3];
     SLLineChartData* dataSource = [[SLLineChartData alloc] initWithValues:tempArray];
     self.dataSource = dataSource;
     dataSource.graphColor = [UIColor clearColor];
@@ -134,20 +109,20 @@
     [self.myView setVisibleXRangeDefaultmum:@(10)];
     
     //增加选配的基准线
-    ChartBaseLine* lineMax = [[ChartBaseLine alloc] init];
-    lineMax.lineWidth = 0.5;
-    lineMax.lineColor = [UIColor yellowColor];
-    lineMax.lineMode = ChartBaseLineDashMode;
-    lineMax.yValue = 90;
-    
-    ChartBaseLine* lineMin = [[ChartBaseLine alloc] init];
-    lineMin.lineWidth = 0.5;
-    lineMin.lineColor = [UIColor purpleColor];
-    lineMin.lineMode = ChartBaseLineStraightMode;
-    lineMin.yValue = 30;
-    [self.myView addYBaseLineWith:lineMax];
-    [self.myView addYBaseLineWith:lineMin];
-    [self.myView setPageScrollerEnable:@(NO)];
+//    ChartBaseLine* lineMax = [[ChartBaseLine alloc] init];
+//    lineMax.lineWidth = 5;
+//    lineMax.lineColor = [UIColor colorWithHex:@"#fbc626"];
+//    lineMax.lineMode = ChartBaseLineStraightMode;
+//    lineMax.yValue = 90;
+//    
+//    ChartBaseLine* lineMin = [[ChartBaseLine alloc] init];
+//    lineMin.lineWidth = 0.5;
+//    lineMin.lineColor = [UIColor purpleColor];
+//    lineMin.lineMode = ChartBaseLineStraightMode;
+//    lineMin.yValue = 30;
+//    [self.myView addYBaseLineWith:lineMax];
+//    [self.myView addYBaseLineWith:lineMin];
+//    [self.myView setPageScrollerEnable:@(NO)];
     
     //直接调用Set方法和refreashDataSourceRestoreContext 和该方法等效
     [self.myView refreashDataSourceRestoreContext:_dataSource];
@@ -156,7 +131,7 @@
 -(NSMutableArray*) tempArray0{
     if (_tempArray0 == nil) {
         _tempArray0 = [NSMutableArray arrayWithCapacity:1];
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 15; i++) {
             int temp = arc4random()%100 + 1;
             if (i < 20) {
                 temp = arc4random()%50 + 1;
@@ -171,7 +146,7 @@
 -(NSMutableArray*) tempArray1{
     if (_tempArray1 == nil) {
         _tempArray1 = [NSMutableArray arrayWithCapacity:1];
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 15; i++) {
             int temp = arc4random()%100 + 1;
             if (i < 20) {
                 temp = arc4random()%50 + 1;
@@ -181,6 +156,22 @@
         }
     }
     return _tempArray1;
+}
+
+
+-(NSMutableArray*) tempArray2{
+    if (_tempArray2 == nil) {
+        _tempArray2 = [NSMutableArray arrayWithCapacity:1];
+        for (int i = 0; i < 15; i++) {
+            int temp = arc4random()%100 + 1;
+            if (i < 20) {
+                temp = arc4random()%50 + 1;
+            }
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:temp];
+            [_tempArray2 addObject:entry];
+        }
+    }
+    return _tempArray2;
 }
 
 #pragma mark - 按键处理
@@ -241,7 +232,7 @@
         if (sender.selected) {
             dataSet.mode = brokenLineMode;
         }else{
-            dataSet.mode = curveLineMode;
+            dataSet.mode = brokenLineMode;
         }
     }
     [self.myView refreashGraph];

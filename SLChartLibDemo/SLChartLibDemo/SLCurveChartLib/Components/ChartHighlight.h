@@ -10,6 +10,17 @@
 #import "ChartComponentBase.h"
 #import <UIKit/UIKit.h>
 
+typedef enum : NSUInteger {
+    textStyleMode,
+    normalStyleMode,
+    tailStyleMode,
+} RemindLabelMode;
+
+typedef enum : NSUInteger {
+    dashModeHightlightLine,
+    SolidModeHightlightLine,
+} HightlightLineMode;
+
 @class ChartHighlight;
 @protocol ChartHighlightDelegate <NSObject>
 @optional
@@ -34,5 +45,8 @@
 @property (nonatomic, assign) int     dataIndex;         //距离点击点最近的当前数据源下标
 @property (nonatomic, assign) CGFloat drawX;             //选定点处于当前屏幕X坐标
 @property (nonatomic, assign) CGFloat drawY;             //选定点处于当前屏幕Y坐标
+@property (nonatomic, assign) RemindLabelMode remindLabelMode; // 提示label的模式
+@property (nonatomic, assign) HightlightLineMode hightlightLineMode; // 高亮时线条类型
+
 @property (nonatomic, weak)   id<ChartHighlightDelegate>     delegate;          //高亮显示具体绘制代理
 @end

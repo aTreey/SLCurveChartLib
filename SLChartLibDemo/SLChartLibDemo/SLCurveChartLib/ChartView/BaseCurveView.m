@@ -10,6 +10,8 @@
 #import "SLGCDTimerTool.h"
 #import "SLAccelerator.h"
 
+#import "UIColor+SLExtension.h"
+
 @interface BaseCurveView()
 {
     //死量
@@ -531,38 +533,93 @@
             self.hightLight.x = data.x;
             self.hightLight.y = data.y;
             self.hightLight.dataSetIndex = dataSetIndex;
+            
+            CGContextSaveGState(ctx);
+            //先绘制虚线<坐标转化>
+            CGFloat modelX = pointX;
+            CGFloat modelY_Star = myH - ybottom;
+            CGFloat modelY_end = ybottom;
+            
+            [[UIColor colorWithHex:@"#bccbd3" andalpha:0.51] set];
+            CGContextSaveGState(ctx);
+            
+            if (self.hightLight.hightlightLineMode == dashModeHightlightLine) {
+                CGFloat pattern[4] = {5,4,5,4};
+                CGContextSetLineWidth(ctx, 1.5);
+                CGContextSetLineDash(ctx, 0, pattern, 4);
+            } else {
+                CGContextMoveToPoint(ctx, modelX, modelY_Star);
+                CGContextAddLineToPoint(ctx, modelX, modelY_end);
+            }
+            CGContextStrokePath(ctx);
+            
             CGRect bounds = CGRectMake(0, 0, myW, myH);
             UIEdgeInsets insets = UIEdgeInsetsMake(ytop, leftYAxisW, ybottom, rightYAxisW);
             if ([self.hightLight.delegate respondsToSelector:@selector(chartHighlight:context:bounds:edageInsets:)]) {
                 [self.hightLight.delegate chartHighlight:self.hightLight context:ctx bounds:bounds edageInsets:insets];
             }else{   //默认提供的一种提示的方法
-                CGFloat remainH = 29.5;
-                CGFloat remainW = 50;
-                CGFloat remainX = (pointX - remainW/2);
-                SLLineChartDataSet* dataSet = [self.datasource firstReference];
-                CGFloat remainY = pointY-21-[dataSet circleRadius]- 2- 6;
-                CGFloat tempMaxY = (myH - ybottom);
-                if(remainY > tempMaxY){
-                    remainY = tempMaxY;
-                }
-                NSString* yLabelStr = [NSString stringWithFormat:@"%0.0lf",data.y];
-                CGFloat showW = 40.0;
-                CGFloat showdowX = remainX + remainW/2 - showW/2;
-                CGRect indexRect = CGRectMake(showdowX, remainY, showW, remainH);
-                UIImage* image = [UIImage imageNamed:@"statistics_data_bg"];
-                [image drawInRect:indexRect];
-                
-                NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:[UIColor whiteColor]];
-                CGSize size = [yLabelStr sizeWithAttributes:attrs];
-                CGFloat labelX = remainX + remainW/2 - size.width/2;
-                CGFloat labelY = remainY + remainH/2 - size.height/2 - 3;
-                [yLabelStr drawInRect:CGRectMake(labelX, labelY, size.width, size.height) withAttributes:attrs];
+                [self drawRemindLabel:self.hightLight context:ctx];
             }
         }else{
         }
     }
     CGContextRestoreGState(ctx);
 }
+
+
+-(void)drawRemindLabel:(ChartHighlight *) hightLight context:(CGContextRef) ctx {
+    
+    CGFloat pointX = hightLight.drawX;
+    CGFloat pointY = hightLight.drawY;
+    ChartDataEntry* data = [self.datasource entryPointForHighLight:self.hightLight];
+    
+    CGFloat remainH = 29.5;
+    CGFloat remainW = 50;
+    CGFloat remainX = (pointX - remainW/2);
+//    SLLineChartDataSet* dataSet = [self.datasource firstReference];
+    
+    
+    
+    NSMutableArray *dataArray = [self.datasource entryArrayForHighLight:hightLight];
+    
+    for (NSDictionary *dict in dataArray) {
+        
+        ChartDataEntry *data = [dict objectForKey:@"SLDataValueKey"];
+        NSLog(@"dict = %@", dict);
+    }
+    
+    for (SLLineChartDataSet *dataSet in self.datasource.dataSets) {
+        CGFloat remainY = pointY-21-[dataSet circleRadius]- 2- 6 - 20;
+        CGFloat tempMaxY = (myH - ybottom);
+        if(remainY > tempMaxY){
+            remainY = tempMaxY;
+        }
+        NSString* yLabelStr = [NSString stringWithFormat:@"%0.0lf",data.y];
+        CGFloat showW = 40.0;
+        CGFloat showdowX = remainX + remainW/2 - showW/2;
+        CGRect indexRect = CGRectMake(showdowX, remainY, showW, remainH);
+        UIImage* image = [UIImage imageNamed:@"statistics_data_bg"];
+        [image drawInRect:indexRect];
+        
+        NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:[UIColor whiteColor]];
+        CGSize size = [yLabelStr sizeWithAttributes:attrs];
+        CGFloat labelX = remainX + remainW/2 - size.width/2;
+        CGFloat labelY = remainY + remainH/2 - size.height/2 - 3;
+        [yLabelStr drawInRect:CGRectMake(labelX, labelY, size.width, size.height) withAttributes:attrs];
+    }
+    
+    
+    
+    if (hightLight.remindLabelMode == textStyleMode) {
+        
+    } else if (hightLight.remindLabelMode == normalStyleMode) {
+        
+    } else {
+        
+    }
+}
+
+
 
 -(void) drawCurveWith:(SLLineChartDataSet*) dataSet
               context:(CGContextRef) ctx

@@ -10,6 +10,7 @@
 
 @implementation HighLightFormatter
 #pragma mark - ChartHighlightDelegate
+/*
 -(void) chartHighlight:(ChartHighlight *) highlight context:(CGContextRef) context bounds:(CGRect) rect edageInsets:(UIEdgeInsets) edageInsets{
     CGContextSaveGState(context);
     CGFloat viewH = rect.size.height;
@@ -56,6 +57,58 @@
     [Ystring drawAtPoint:localpointY withAttributes:yattrs];
     CGContextRestoreGState(context);
 }
+
+*/
+
+-(void) chartHighlight:(ChartHighlight *) highlight context:(CGContextRef) context bounds:(CGRect) rect edageInsets:(UIEdgeInsets) edageInsets{
+    CGContextSaveGState(context);
+    CGFloat viewH = rect.size.height;
+    CGFloat ybottom = edageInsets.bottom;
+    //先绘制虚线<坐标转化>
+    CGFloat modelX = highlight.drawX;
+    CGFloat modelY_Star = viewH - ybottom;
+    CGFloat modelY_end = ybottom;
+    
+    [[UIColor colorWithHex:@"#bccbd3" andalpha:0.51] set];
+    CGContextSaveGState(context);
+//    CGFloat pattern[4] = {5,1,5,1};
+    CGContextSetLineWidth(context, 1.5);
+//    CGContextSetLineDash(context, 0, pattern, 4);
+
+    CGContextMoveToPoint(context, modelX, modelY_Star);
+    CGContextAddLineToPoint(context, modelX, modelY_end);
+    CGContextStrokePath(context);
+    CGContextRestoreGState(context);
+    //开始绘制显示的数值预计圆形小球
+    NSDictionary *yattrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11] Color:[UIColor colorWithHex:@"#727272"]];
+    NSString *Ystring = [NSString stringWithFormat:@"%0.0lf",highlight.y];
+    CGSize ysize = [Ystring sizeWithAttributes:yattrs];
+    CGFloat radicusW = ysize.width + 14;
+    CGFloat radicusH = ysize.height+ 4;
+    CGFloat radicusR = radicusH/2;
+    if (radicusW < radicusH) {
+        radicusW = radicusH;
+    }
+    if ((highlight.y < 10.00000) && (highlight.y >= 0.0000)) {
+        radicusW = radicusH;
+    }
+    CGFloat radicusX = highlight.drawX - radicusW/2;
+    CGFloat radicusY = highlight.drawY - radicusH/2;
+    
+    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 0.51);
+    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
+    UIColor* stokeColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.51];
+    UIColor* fillColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    
+    CGRect radicusrect = CGRectMake(radicusX, radicusY, radicusW, radicusH);
+    [self drawRadicusRectWith:radicusrect radius:radicusR strokeColor:stokeColor fillColor:fillColor context:context linewidth:2];
+    CGPoint localpointY = CGPointMake(modelX - ysize.width/2, highlight.drawY- ysize.height/2);
+    [Ystring drawAtPoint:localpointY withAttributes:yattrs];
+    CGContextRestoreGState(context);
+}
+
+
+
 
 -(void) drawRadicusRectWith:(CGRect) rect
                      radius:(CGFloat) radicus
