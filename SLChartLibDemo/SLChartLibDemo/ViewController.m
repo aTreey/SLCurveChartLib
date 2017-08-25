@@ -48,6 +48,7 @@
     xAxis.labelFont = [UIFont systemFontOfSize:12];
     xAxis.labelTextColor = [UIColor colorWithHex:@"#999999"];
     xAxis.axisLineColor = [UIColor colorWithHex:@"#999999"];
+    xAxis.axisLineWidth = 1.0;
     xAxis.maxLongLabelString = @"1234";
     xAxis.enabled = YES;
     
