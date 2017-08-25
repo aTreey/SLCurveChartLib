@@ -558,7 +558,15 @@
             if ([self.hightLight.delegate respondsToSelector:@selector(chartHighlight:context:bounds:edageInsets:)]) {
                 [self.hightLight.delegate chartHighlight:self.hightLight context:ctx bounds:bounds edageInsets:insets];
             }else{   //默认提供的一种提示的方法
-                [self drawRemindLabel:self.hightLight context:ctx];
+                
+                NSMutableArray *dataArray = [self.datasource entryArrayForHighLight:hightLight];
+                
+                for (NSInteger i = 0; i < dataArray.count; i++) {
+                    ChartDataEntry *data = [dataArray[i] objectForKey:@"SLDataValueKey"];
+                    CGFloat pointY = myH - ((data.y - minY) * ypixunit)- ybottom;
+                    self.hightLight.drawY = pointY;
+                    [self drawRemindLabel:self.hightLight data:data context:ctx];
+                }
             }
         }else{
         }
@@ -566,57 +574,40 @@
     CGContextRestoreGState(ctx);
 }
 
-
--(void)drawRemindLabel:(ChartHighlight *) hightLight context:(CGContextRef) ctx {
+#pragma mark - 绘制提醒lable
+-(void)drawRemindLabel:(ChartHighlight *) hightLight data:(ChartDataEntry *)data context:(CGContextRef) ctx {
     
     CGFloat pointX = hightLight.drawX;
     CGFloat pointY = hightLight.drawY;
-    ChartDataEntry* data = [self.datasource entryPointForHighLight:self.hightLight];
     
     CGFloat remainH = 29.5;
     CGFloat remainW = 50;
     CGFloat remainX = (pointX - remainW/2);
-//    SLLineChartDataSet* dataSet = [self.datasource firstReference];
+    SLLineChartDataSet* dataSet = [self.datasource firstReference];
     
-    
-    
-    NSMutableArray *dataArray = [self.datasource entryArrayForHighLight:hightLight];
-    
-    for (NSDictionary *dict in dataArray) {
-        
-        ChartDataEntry *data = [dict objectForKey:@"SLDataValueKey"];
-        NSLog(@"dict = %@", dict);
+    CGFloat remainY = pointY-21-[dataSet circleRadius]- 2- 6;
+    CGFloat tempMaxY = (myH - ybottom);
+    if(remainY > tempMaxY){
+        remainY = tempMaxY;
     }
     
-    for (SLLineChartDataSet *dataSet in self.datasource.dataSets) {
-        CGFloat remainY = pointY-21-[dataSet circleRadius]- 2- 6 - 20;
-        CGFloat tempMaxY = (myH - ybottom);
-        if(remainY > tempMaxY){
-            remainY = tempMaxY;
+    NSString* yLabelStr = [NSString stringWithFormat:@"%0.0lf",data.y];
+    CGFloat showW = 40.0;
+    CGFloat showdowX = remainX + remainW/2 - showW/2;
+    CGRect indexRect = CGRectMake(showdowX, remainY, showW, remainH);
+    if (self.hightLight.remindLabelMode == tailStyleMode) {
+        if (data.icon) {
+            [data.icon drawInRect:indexRect];
+        } else {
+            [[UIImage imageNamed:@"statistics_data_bg"] drawInRect:indexRect];
         }
-        NSString* yLabelStr = [NSString stringWithFormat:@"%0.0lf",data.y];
-        CGFloat showW = 40.0;
-        CGFloat showdowX = remainX + remainW/2 - showW/2;
-        CGRect indexRect = CGRectMake(showdowX, remainY, showW, remainH);
-        UIImage* image = [UIImage imageNamed:@"statistics_data_bg"];
-        [image drawInRect:indexRect];
-        
-        NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:[UIColor whiteColor]];
-        CGSize size = [yLabelStr sizeWithAttributes:attrs];
-        CGFloat labelX = remainX + remainW/2 - size.width/2;
-        CGFloat labelY = remainY + remainH/2 - size.height/2 - 3;
-        [yLabelStr drawInRect:CGRectMake(labelX, labelY, size.width, size.height) withAttributes:attrs];
     }
     
-    
-    
-    if (hightLight.remindLabelMode == textStyleMode) {
-        
-    } else if (hightLight.remindLabelMode == normalStyleMode) {
-        
-    } else {
-        
-    }
+    NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:[UIColor redColor]];
+    CGSize size = [yLabelStr sizeWithAttributes:attrs];
+    CGFloat labelX = remainX + remainW/2 - size.width/2;
+    CGFloat labelY = remainY + remainH/2 - size.height/2 - 3;
+    [yLabelStr drawInRect:CGRectMake(labelX, labelY, size.width, size.height) withAttributes:attrs];
 }
 
 

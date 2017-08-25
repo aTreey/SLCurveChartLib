@@ -36,7 +36,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor cyanColor];
     
     ChartAxisBase* xAxis = self.myView.XAxis;
     xAxis.axisValueFormatter = [[XAxisFormtter alloc] init];
@@ -47,15 +47,28 @@
     xAxis.GridLinesMode = straightModeLine; // 网格线类型
     xAxis.labelFont = [UIFont systemFontOfSize:12];
     xAxis.labelTextColor = [UIColor colorWithHex:@"#999999"];
+    xAxis.axisLineColor = [UIColor colorWithHex:@"#999999"];
     xAxis.maxLongLabelString = @"1234";
     xAxis.enabled = YES;
+    
+//    ChartAxisBase* leftYAxis = self.myView.leftYAxis;
+//    leftYAxis.axisValueFormatter = [[YAxisFormtter alloc] init];
+//    leftYAxis.drawLabelsEnabled = YES;
+//    leftYAxis.drawAxisLineEnabled = NO;
+//    leftYAxis.drawGridLinesEnabled = YES;
+//    leftYAxis.labelFont = [UIFont systemFontOfSize:11.0];
+//    leftYAxis.labelTextColor = [UIColor whiteColor];
+//    leftYAxis.maxLongLabelString = @"100.0";
+//    leftYAxis.GridLinesMode = dashModeLine;
+//    leftYAxis.gridColor = [UIColor colorWithColor:[UIColor whiteColor] andalpha:0.25];
+//    leftYAxis.enabled = YES;
     
     //默认选择的highlight
     ChartHighlight* highLight = [[ChartHighlight alloc] init];
     highLight.enabled = YES;
-    highLight.dataIndex = 10;
+    highLight.dataIndex = 2;
     highLight.hightlightLineMode = SolidModeHightlightLine;
-    highLight.remindLabelMode = textStyleMode;
+    highLight.remindLabelMode = tailStyleMode;
     self.highLightFor = [[HighLightFormatter alloc] init];
 //    highLight.delegate = self.highLightFor;
     self.myView.hightLight = highLight;
@@ -107,19 +120,19 @@
     [self.myView setVisibleXRangeMaximum:@(50)];
     [self.myView setVisibleXRangeMinimum:@(2)];
     [self.myView setVisibleXRangeDefaultmum:@(10)];
-    
-    //增加选配的基准线
+
+//    //增加选配的基准线
 //    ChartBaseLine* lineMax = [[ChartBaseLine alloc] init];
 //    lineMax.lineWidth = 5;
 //    lineMax.lineColor = [UIColor colorWithHex:@"#fbc626"];
 //    lineMax.lineMode = ChartBaseLineStraightMode;
-//    lineMax.yValue = 90;
+//    lineMax.yValue = 40;
 //    
 //    ChartBaseLine* lineMin = [[ChartBaseLine alloc] init];
 //    lineMin.lineWidth = 0.5;
 //    lineMin.lineColor = [UIColor purpleColor];
 //    lineMin.lineMode = ChartBaseLineStraightMode;
-//    lineMin.yValue = 30;
+//    lineMin.yValue = 20;
 //    [self.myView addYBaseLineWith:lineMax];
 //    [self.myView addYBaseLineWith:lineMin];
 //    [self.myView setPageScrollerEnable:@(NO)];
@@ -131,12 +144,9 @@
 -(NSMutableArray*) tempArray0{
     if (_tempArray0 == nil) {
         _tempArray0 = [NSMutableArray arrayWithCapacity:1];
-        for (int i = 0; i < 15; i++) {
-            int temp = arc4random()%100 + 1;
-            if (i < 20) {
-                temp = arc4random()%50 + 1;
-            }
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:temp];
+        NSArray *array = @[@"90", @"100", @"40", @"60", @"190", @"20", @"70", @"0", @"0", @"0", @"0", @"0"];
+        for (int i = 1; i < array.count; i++) {
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray0 addObject:entry];
         }
     }
@@ -146,12 +156,9 @@
 -(NSMutableArray*) tempArray1{
     if (_tempArray1 == nil) {
         _tempArray1 = [NSMutableArray arrayWithCapacity:1];
-        for (int i = 0; i < 15; i++) {
-            int temp = arc4random()%100 + 1;
-            if (i < 20) {
-                temp = arc4random()%50 + 1;
-            }
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:temp];
+        NSArray *array = @[@"20", @"50", @"90", @"100", @"30", @"80", @"45", @"0", @"0", @"0", @"0", @"0"];
+        for (int i = 1; i < array.count; i++) {
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray1 addObject:entry];
         }
     }
@@ -162,12 +169,9 @@
 -(NSMutableArray*) tempArray2{
     if (_tempArray2 == nil) {
         _tempArray2 = [NSMutableArray arrayWithCapacity:1];
-        for (int i = 0; i < 15; i++) {
-            int temp = arc4random()%100 + 1;
-            if (i < 20) {
-                temp = arc4random()%50 + 1;
-            }
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:temp];
+        NSArray *array = @[@"100", @"150", @"300", @"80", @"100", @"120", @"200", @"0", @"0", @"0", @"0", @"0"];
+        for (int i = 1; i < array.count; i++) {
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray2 addObject:entry];
         }
     }
