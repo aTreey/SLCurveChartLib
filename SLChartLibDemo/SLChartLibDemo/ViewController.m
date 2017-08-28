@@ -92,6 +92,7 @@
     [self.myView setScaleXEnabled:@(YES)];
     [self.myView setDynamicYAixs:@(NO)];
     [self.myView setBaseYValueFromZero:@(YES)];
+    [self.myView setXlabelbottom:15];
     
     //设置的时候务必保证  VisibleXRangeDefaultmum 落在 VisibleXRangeMinimum 和 VisibleXRangeMaximum 否则将导致缩放功能不可用
     [self.myView setVisibleXRangeMaximum:@(50)];
@@ -105,7 +106,7 @@
 -(NSMutableArray*) tempArray0{
     if (_tempArray0 == nil) {
         _tempArray0 = [NSMutableArray arrayWithCapacity:1];
-        NSArray *array = @[@"1000", @"1200", @"1000", @"900", @"1100", @"1000", @"800", @"1000", @"800", @"1000", @"900", @"1100"];
+        NSArray *array = @[@"-1000", @"-1200", @"1000", @"900", @"1100", @"1000", @"800", @"1000", @"800", @"1000", @"900", @"1100"];
         for (int i = 0; i < array.count; i++) {
             ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i+1 y:[array[i] integerValue]];
             [_tempArray0 addObject:entry];
@@ -117,7 +118,7 @@
 -(NSMutableArray*) tempArray1{
     if (_tempArray1 == nil) {
         _tempArray1 = [NSMutableArray arrayWithCapacity:1];
-        NSArray *array = @[@"300", @"200", @"250", @"210", @"260", @"310", @"295", @"0", @"300", @"0", @"0", @"0"];
+        NSArray *array = @[@"300", @"200", @"-250", @"210", @"260", @"310", @"295", @"0", @"300", @"0", @"0", @"0"];
         for (int i = 0; i < array.count; i++) {
             ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i+1 y:[array[i] integerValue]];
             [_tempArray1 addObject:entry];

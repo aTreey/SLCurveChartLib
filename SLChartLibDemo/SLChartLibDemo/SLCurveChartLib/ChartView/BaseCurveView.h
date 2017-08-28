@@ -35,11 +35,14 @@
 @property (nonatomic, strong) NSNumber* hightLightTap;
 @property (nonatomic, strong) NSNumber* baseYValueFromZero;
 @property (nonatomic, strong) NSNumber* pageScrollerEnable;
+@property (nonatomic, assign) CGFloat xlabelbottom; //x轴的坐标距离X轴基线的高度
+
 //X轴和Y坐标轴
 @property (nonatomic, strong) ChartAxisBase* XAxis;
 @property (nonatomic, strong) ChartAxisBase* leftYAxis;
 @property (nonatomic, strong) ChartAxisBase* rightYAxis;
 @property (nonatomic, strong) ChartHighlight* hightLight;
+
 
 #pragma mark - 常用的方法
 /**

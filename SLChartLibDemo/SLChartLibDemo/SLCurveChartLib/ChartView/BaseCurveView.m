@@ -36,7 +36,7 @@
     
     //为了方便书写引入
     float ytop;
-    float xlabelbottom;     //x轴的坐标距离X轴基线的高度
+    //float xlabelbottom;     //x轴的坐标距离X轴基线的高度
     float ybottom;
     float leftYAxisW;
     float rightYAxisW;
@@ -115,7 +115,12 @@
     xlabelminstep = 1;
     fromX = 0.0;
     xlabelminstep = 60.0;
-    xlabelbottom = 5.0;
+    if (_xlabelbottom == 0) {
+        _xlabelbottom = 15.0;
+    } else {
+        _xlabelbottom = 5.0;
+    }
+    
     
     //最大值和最小数值
     minY = [self.datasource yMin];
@@ -384,7 +389,7 @@
                     NSString *string = [axis.axisValueFormatter stringForValue:data.x axis:axis];
                     CGSize size = [string sizeWithAttributes:attrs];
                     CGFloat pointX = leftYAxisW + drawFromX + (index-drawFromIndex) * xstep;
-                    CGFloat pointY = myH - (ybottom - xlabelbottom);
+                    CGFloat pointY = myH - (ybottom - _xlabelbottom);
                     CGPoint localpoint = CGPointMake(pointX-size.width/2, pointY);
                     [string drawAtPoint:localpoint withAttributes:attrs];
                 }
