@@ -560,12 +560,12 @@
             }else{   //默认提供的一种提示的方法
                 
                 NSMutableArray *dataArray = [self.datasource entryArrayForHighLight:hightLight];
-                
+                NSMutableArray *dataSetArray = self.datasource.dataSets;
                 for (NSInteger i = 0; i < dataArray.count; i++) {
                     ChartDataEntry *data = [dataArray[i] objectForKey:@"SLDataValueKey"];
                     CGFloat pointY = myH - ((data.y - minY) * ypixunit)- ybottom;
                     self.hightLight.drawY = pointY;
-                    [self drawRemindLabel:self.hightLight data:data context:ctx];
+                    [self drawRemindLabel:self.hightLight data:data dataSet:(SLLineChartDataSet *)dataSetArray[i] context:ctx];
                 }
             }
         }else{
@@ -575,7 +575,7 @@
 }
 
 #pragma mark - 绘制提醒lable
--(void)drawRemindLabel:(ChartHighlight *) hightLight data:(ChartDataEntry *)data context:(CGContextRef) ctx {
+-(void)drawRemindLabel:(ChartHighlight *) hightLight data:(ChartDataEntry *)data dataSet:(SLLineChartDataSet *)dataSet context:(CGContextRef) ctx {
     
     CGFloat pointX = hightLight.drawX;
     CGFloat pointY = hightLight.drawY;
@@ -583,8 +583,6 @@
     CGFloat remainH = 29.5;
     CGFloat remainW = 50;
     CGFloat remainX = (pointX - remainW/2);
-    SLLineChartDataSet* dataSet = [self.datasource firstReference];
-    
     CGFloat remainY = pointY-21-[dataSet circleRadius]- 2- 6;
     CGFloat tempMaxY = (myH - ybottom);
     if(remainY > tempMaxY){
@@ -603,7 +601,7 @@
         }
     }
     
-    NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:[UIColor redColor]];
+    NSDictionary* attrs = [self getAttributesWithfont:[UIFont systemFontOfSize:11.0] Color:dataSet.color];
     CGSize size = [yLabelStr sizeWithAttributes:attrs];
     CGFloat labelX = remainX + remainW/2 - size.width/2;
     CGFloat labelY = remainY + remainH/2 - size.height/2 - 3;

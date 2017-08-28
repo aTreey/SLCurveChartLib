@@ -10,7 +10,7 @@
 
 @implementation XAxisFormtter
 -(NSString *) stringForValue:(double) value axis:(ChartAxisBase *) axis{
-    NSString* axisLabel = [NSString stringWithFormat:@"%0.0lf", value];
+    NSString* axisLabel = [NSString stringWithFormat:@"%zd月", (int)value];
     return axisLabel;
 }
 
