@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSMutableArray* tempArray0;
 @property (nonatomic, strong) NSMutableArray* tempArray1;
 @property (nonatomic, strong) NSMutableArray* tempArray2;
+@property (nonatomic, strong) NSArray* xAxisArray;
+
 
 @property (nonatomic, strong) SLGCDTimer timer;
 @property (nonatomic, strong) HighLightFormatter *highLightFor;
@@ -37,7 +39,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor cyanColor];
-    
     ChartAxisBase* xAxis = self.myView.XAxis;
     xAxis.axisValueFormatter = [[XAxisFormtter alloc] init];
     xAxis.drawLabelsEnabled = YES;
@@ -50,6 +51,7 @@
     xAxis.axisLineWidth = 1.0;
     xAxis.maxLongLabelString = @"1234";
     xAxis.enabled = YES;
+    xAxis.axisArray = @[@"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"10", @"11", @"12"];
     
     //默认选择的highlight
     ChartHighlight* highLight = [[ChartHighlight alloc] init];
@@ -88,7 +90,6 @@
     self.dataSource = dataSource;
     dataSource.graphColor = [UIColor whiteColor];
     
-    
     [self.myView setScaleXEnabled:@(YES)];
     [self.myView setDynamicYAixs:@(NO)];
     [self.myView setBaseYValueFromZero:@(YES)];
@@ -106,9 +107,9 @@
 -(NSMutableArray*) tempArray0{
     if (_tempArray0 == nil) {
         _tempArray0 = [NSMutableArray arrayWithCapacity:1];
-        NSArray *array = @[@"-1000", @"-1200", @"1000", @"900", @"1100", @"1000", @"800", @"1000", @"800", @"1000", @"900", @"1100"];
+        NSArray *array = @[@"-1000", @"-1200", @"1000", @"900", @"1100", @"-1200", @"1000", @"900", @"1100", @"1000", @"900", @"380"];
         for (int i = 0; i < array.count; i++) {
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i+1 y:[array[i] integerValue]];
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray0 addObject:entry];
         }
     }
@@ -118,9 +119,9 @@
 -(NSMutableArray*) tempArray1{
     if (_tempArray1 == nil) {
         _tempArray1 = [NSMutableArray arrayWithCapacity:1];
-        NSArray *array = @[@"300", @"200", @"-250", @"210", @"260", @"310", @"295", @"0", @"300", @"0", @"0", @"0"];
+        NSArray *array = @[@"300", @"200", @"-250", @"210", @"260", @"300", @"200", @"-250", @"210", @"260", @"-250", @"210"];
         for (int i = 0; i < array.count; i++) {
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i+1 y:[array[i] integerValue]];
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray1 addObject:entry];
         }
     }
@@ -131,9 +132,9 @@
 -(NSMutableArray*) tempArray2{
     if (_tempArray2 == nil) {
         _tempArray2 = [NSMutableArray arrayWithCapacity:1];
-        NSArray *array = @[@"500", @"350", @"400", @"380", @"500", @"420", @"450", @"600", @"480", @"500", @"600", @"0"];
+        NSArray *array = @[@"500", @"350", @"400", @"380", @"500", @"500", @"350", @"400", @"380", @"500", @"400", @"380"];
         for (int i = 0; i < array.count; i++) {
-            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i+1 y:[array[i] integerValue]];
+            ChartDataEntry* entry = [[ChartDataEntry alloc] initWithX:i y:[array[i] integerValue]];
             [_tempArray2 addObject:entry];
         }
     }

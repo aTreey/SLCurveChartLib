@@ -369,6 +369,9 @@
 
 #pragma mark - 绘制对应坐标轴的方法
 -(void) drawXaxis:(ChartAxisBase *) axis  context:(CGContextRef) ctx{
+    
+    NSArray *xAxisValueArray = axis.axisArray;
+    
     //如果需要绘制X轴
     CGContextSaveGState(ctx);
     if (axis.enabled) {
@@ -381,12 +384,19 @@
                 }
             }
             NSDictionary *attrs = [axis getAttributes];
-            for (NSInteger index = drawFromIndex; index < (drawToIndex+1); index++) {
+            NSInteger xAxisMaxCount = axis.axisArray ? axis.axisArray.count : (drawToIndex + 1);
+            for (NSInteger index = drawFromIndex; index < xAxisMaxCount; index++) {
                 [axis.labelTextColor set];
                 if (index % aXisJump == 0) {
                     id<SLChartDataProtocol> dataSet = [self.datasource firstReference];
                     ChartDataEntry* data = [dataSet entryForIndex:(int)index];
-                    NSString *string = [axis.axisValueFormatter stringForValue:data.x axis:axis];
+                    NSString *string = @"";
+                    if (xAxisValueArray) {
+                        string = [axis.axisValueFormatter stringForValue:[xAxisValueArray[index] doubleValue] axis:axis];
+                    } else {
+                        string = [axis.axisValueFormatter stringForValue:data.y axis:axis];
+                    }
+                    
                     CGSize size = [string sizeWithAttributes:attrs];
                     CGFloat pointX = leftYAxisW + drawFromX + (index-drawFromIndex) * xstep;
                     CGFloat pointY = myH - (ybottom - _xlabelbottom);
@@ -394,7 +404,6 @@
                     [string drawAtPoint:localpoint withAttributes:attrs];
                 }
             }
-     
         }
         if (axis.drawAxisLineEnabled) {
             [axis.axisLineColor set];
@@ -402,12 +411,15 @@
             if (drawFromX < lineStarX) {
                 lineStarX = 0;
             }
-            CGFloat lineEndX = leftYAxisW + drawFromX + (drawToIndex - drawFromIndex)*xstep;
+            
+            NSInteger xAxisMaxCount = xAxisValueArray ? xAxisValueArray.count : drawToIndex;
+            CGFloat lineEndX = leftYAxisW + drawFromX + (xAxisMaxCount - drawFromIndex)*xstep;
             CGFloat baseLineY = myH - ybottom;
             CGContextMoveToPoint(ctx, lineStarX, baseLineY);
             CGContextAddLineToPoint(ctx, lineEndX, baseLineY);
             CGContextStrokePath(ctx);
         }
+        
         if (axis.drawGridLinesEnabled) {
             [axis.gridColor set];
             

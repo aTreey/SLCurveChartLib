@@ -36,6 +36,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) BOOL          centerAxisLabelsEnabled;
 @property (nonatomic, assign) NSString*     maxLongLabelString;
 @property (nonatomic, assign) ChartAxisType axisType;
+@property (nonatomic, strong) NSArray *axisArray;
+
 
 -(CGSize) getLabelSize;
 -(NSDictionary *) getAttributes;
